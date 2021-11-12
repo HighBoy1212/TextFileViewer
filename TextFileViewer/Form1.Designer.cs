@@ -28,6 +28,7 @@
             this.miOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.miQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.rtbText = new System.Windows.Forms.RichTextBox();
+            this.ofdOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.msMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -53,8 +54,9 @@
             // miOpen
             // 
             this.miOpen.Name = "miOpen";
-            this.miOpen.Size = new System.Drawing.Size(103, 22);
+            this.miOpen.Size = new System.Drawing.Size(180, 22);
             this.miOpen.Text = "Open";
+            this.miOpen.Click += new System.EventHandler(this.miOpen_Click);
             // 
             // miQuit
             // 
@@ -96,6 +98,7 @@
         private System.Windows.Forms.ToolStripMenuItem miOpen;
         private System.Windows.Forms.ToolStripMenuItem miQuit;
         private System.Windows.Forms.RichTextBox rtbText;
+        private System.Windows.Forms.OpenFileDialog ofdOpenFile;
     }
 }
 

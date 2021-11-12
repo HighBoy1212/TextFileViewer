@@ -17,5 +17,16 @@ namespace TextFileViewer {
         private void miQuit_Click(object sender, EventArgs e) {
             this.Close();
         }
+
+        private void miOpen_Click(object sender, EventArgs e)
+        {
+            // Show the open file dialog and store the result it returns
+            DialogResult drResult = ofdOpenFile.ShowDialog();
+            // Only open and display the file if the user clicked open which returns a dialog result "OK"\
+            if (drResult == DialogResult.OK)
+            {
+                MessageBox.Show("Display the file");
+            }
+        }
     }
 }
