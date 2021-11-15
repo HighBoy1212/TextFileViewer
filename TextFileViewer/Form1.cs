@@ -47,7 +47,7 @@ namespace TextFileViewer {
             // The special return value -1 indicates that we have reached the end of the file and there is no more data to read
             Encoding encUTF8 = Encoding.UTF8;
             byte[] byBuffer = new byte[1024];
-            int iBytesRead = 0;
+            int iBytesRead;
             // Loop through the characters in the file 1024 bytes at a time
             while ((iBytesRead = fsFile.Read(byBuffer, 0, 1024)) > 0)
             {
