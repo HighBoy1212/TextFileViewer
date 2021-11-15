@@ -34,10 +34,14 @@ namespace TextFileViewer {
         // Function to display the text in the chosen file
         private void DisplayText()
         {
+            // Clear the rich textbox
+            rtbText.Clear();
             // Open the file for reading. Returns an instance of filestream which we use to read data from a file
             string strPath = ofdOpenFile.FileName;
             FileStream fsFile = File.Open(strPath, FileMode.Open, FileAccess.Read);
-            // read data from the file one byte at a time. Translate each byte into the corresponding character
+            // Check for BOM at the beginning of file
+            checkBOM(fsFile);
+            // Read data from the file one byte at a time. Translate each byte into the corresponding character
             // and display it in the rich textbox
             // Note that the read byte method returns the next byte as an integer
             // The special return value -1 indicates that we have reached the end of the file and there is no more data to read
@@ -53,8 +57,25 @@ namespace TextFileViewer {
                 // Now we have the next character. Append it to the text in the rich textbox
                 rtbText.AppendText(strDecodedChar);
             }
-            // Finished reading the file. Close it.
+            // Finished reading the file. Close it.-
             fsFile.Close();
+        }
+
+        // A function to check for a BOM (0xEF, 0xBB, 0xBF) at the beginning of the file and skip over it if present
+        private void checkBOM(FileStream fsFile) 
+        {
+            // Read 3 bytes in a single read of data from the file
+            // Read method returns the number of bytes actually read from the file
+            byte[] byBuffer = new byte[3];
+            int iBytesRead = fsFile.Read(byBuffer, 0, 3);
+            // Check whether we read 3 bytes and they match the BOM bytes
+            if(iBytesRead == 3 && byBuffer[0] == 0xEF && byBuffer[1] == 0xBB && byBuffer[2] == 0xBF)
+            {
+                // The BOM is present and we skipped over it by reading it
+                return;
+            }
+            // There is no BOM, need to move file position pointer back to the first byte
+            fsFile.Seek(0, SeekOrigin.Begin);
         }
     }
 }
