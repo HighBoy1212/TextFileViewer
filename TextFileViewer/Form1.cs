@@ -28,5 +28,7 @@ namespace TextFileViewer {
                 MessageBox.Show("Display the file");
             }
         }
+
+        // Function to display the text in the chosen file
     }
 }

@@ -54,7 +54,7 @@
             // miOpen
             // 
             this.miOpen.Name = "miOpen";
-            this.miOpen.Size = new System.Drawing.Size(180, 22);
+            this.miOpen.Size = new System.Drawing.Size(103, 22);
             this.miOpen.Text = "Open";
             this.miOpen.Click += new System.EventHandler(this.miOpen_Click);
             // 
@@ -73,6 +73,10 @@
             this.rtbText.Size = new System.Drawing.Size(480, 300);
             this.rtbText.TabIndex = 1;
             this.rtbText.Text = "";
+            // 
+            // ofdOpenFile
+            // 
+            this.ofdOpenFile.Filter = "Text Files|**.txt|All Files|*.*";
             // 
             // MainForm
             // 
