@@ -43,16 +43,15 @@ namespace TextFileViewer {
             // The special return value -1 indicates that we have reached the end of the file and there is no more data to read
             Encoding encUTF8 = Encoding.UTF8;
             byte[] byBuffer = new byte[1];
-            int iNextByte = fsFile.ReadByte();
-            while (iNextByte != -1)
+            int iNextByte = 0;
+            // Loop through the characters in the file
+            while ((iNextByte = fsFile.ReadByte()) != -1)
             {
                 // Convert to a character using the UTF-8 encoding. Must pass the bytes to the encoder as an array
                 byBuffer[0] = (byte)iNextByte;
                 string strDecodedChar = encUTF8.GetString(byBuffer);
                 // Now we have the next character. Append it to the text in the rich textbox
                 rtbText.AppendText(strDecodedChar);
-                // Read the next byte from the file
-                iNextByte = fsFile.ReadByte();
             }
             // Finished reading the file. Close it.
             fsFile.Close();
