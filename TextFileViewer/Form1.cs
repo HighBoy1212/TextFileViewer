@@ -48,7 +48,7 @@ namespace TextFileViewer {
             Encoding encUTF8 = Encoding.UTF8;
             byte[] byBuffer = new byte[1024];
             int iBytesRead = 0;
-            // Loop through the characters in the file 1024 byts at a time
+            // Loop through the characters in the file 1024 bytes at a time
             while ((iBytesRead = fsFile.Read(byBuffer, 0, 1024)) > 0)
             {
                 // Convert to a string of characters using the UTF-8 encoding
