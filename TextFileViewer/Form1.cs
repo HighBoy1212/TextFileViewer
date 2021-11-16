@@ -92,8 +92,19 @@ namespace TextFileViewer {
         // Save
         private void miSave_Click(object sender, EventArgs e)
         {
-            // Save to the current path
-            SaveText(strCurrentPath);
+            if (strCurrentPath != null)
+            {
+                // Save to the current path
+                SaveText(strCurrentPath);
+            }
+            /*else
+            {
+                if (sfdSaveFile.ShowDialog() == DialogResult.OK)
+                {
+                    // Proceed to save to the selected path
+                    SaveText(sfdSaveFile.FileName);
+                }
+            }*/
         }
 
         // Save as
@@ -115,7 +126,22 @@ namespace TextFileViewer {
         // Save the text currently in the rich textbox to the given file
         private void SaveText(string strSavePath)
         {
-
+            // Open the file to save to. Create a new file if it does not already exist
+            // and write over the file if one already exists
+            FileStream fsSaveFile = File.Open(strSavePath, FileMode.Create, FileAccess.Write);
+            // Write a BOM if the original file contained one
+            if (bHasBOM)
+            {
+                // Write bytes (0xEF, 0xBB, 0xBF)
+                fsSaveFile.WriteByte(0xEF);
+                fsSaveFile.WriteByte(0xBB);
+                fsSaveFile.WriteByte(0xBF);
+            }
+            // Get the text from the rich textbox, convert to byte[] (using UTF-8 encoding), and write to file
+            string strText = rtbText.Text;
+            byte[] byBuffer = Encoding.UTF8.GetBytes(strText);
+            fsSaveFile.Write(byBuffer, 0, byBuffer.Length);
+            fsSaveFile.Close();
         }
 
         
