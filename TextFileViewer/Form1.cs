@@ -12,6 +12,12 @@ using System.IO;
 
 namespace TextFileViewer {
     public partial class MainForm : Form {
+        // Fields
+        // Keep track of path to the file whose text is currently in display
+        private string strCurrentPath = null;
+        // Keep track of whether displayed file has BOM
+        private bool bHasBOM = false;
+
         public MainForm() {
             InitializeComponent();
         }
@@ -27,6 +33,8 @@ namespace TextFileViewer {
             // Only open and display the file if the user clicked open which returns a dialog result "OK"\
             if (drResult == DialogResult.OK)
             {
+                // Opening a new file. Save its path.
+                strCurrentPath = ofdOpenFile.FileName;
                 DisplayText();
             }
         }
@@ -71,10 +79,45 @@ namespace TextFileViewer {
             if(iBytesRead == 3 && byBuffer[0] == 0xEF && byBuffer[1] == 0xBB && byBuffer[2] == 0xBF)
             {
                 // The BOM is present and we skipped over it by reading it
+                // Save the fact that BOM was present
+                bHasBOM = true;
                 return;
             }
             // There is no BOM, need to move file position pointer back to the first byte
             fsFile.Seek(0, SeekOrigin.Begin);
+            // Save the fact that no BOM is present
+            bHasBOM = false;
         }
+
+        // Save
+        private void miSave_Click(object sender, EventArgs e)
+        {
+            // Save to the current path
+            SaveText(strCurrentPath);
+        }
+
+        // Save as
+        private void miSaveAs_Click(object sender, EventArgs e)
+        {
+            // Pop up the save file dialog so the user can choose the path to save to
+            // Set the initial path equal to the current path if there a valid one
+            if(strCurrentPath != null)
+            {
+                sfdSaveFile.FileName = strCurrentPath;
+            }
+            // Display the dialog and only proceed if it returns "OK"
+            if (sfdSaveFile.ShowDialog() == DialogResult.OK)
+            {
+                // Proceed to save to the selected path
+                SaveText(sfdSaveFile.FileName);
+            }
+        }
+        // Save the text currently in the rich textbox to the given file
+        private void SaveText(string strSavePath)
+        {
+
+        }
+
+        
     }
 }

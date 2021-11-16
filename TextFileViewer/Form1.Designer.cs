@@ -29,6 +29,9 @@
             this.miQuit = new System.Windows.Forms.ToolStripMenuItem();
             this.rtbText = new System.Windows.Forms.RichTextBox();
             this.ofdOpenFile = new System.Windows.Forms.OpenFileDialog();
+            this.miSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.sfdSaveFile = new System.Windows.Forms.SaveFileDialog();
+            this.miSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.msMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,6 +49,8 @@
             // 
             this.miFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miOpen,
+            this.miSave,
+            this.miSaveAs,
             this.miQuit});
             this.miFile.Name = "miFile";
             this.miFile.Size = new System.Drawing.Size(37, 20);
@@ -54,14 +59,14 @@
             // miOpen
             // 
             this.miOpen.Name = "miOpen";
-            this.miOpen.Size = new System.Drawing.Size(103, 22);
+            this.miOpen.Size = new System.Drawing.Size(180, 22);
             this.miOpen.Text = "Open";
             this.miOpen.Click += new System.EventHandler(this.miOpen_Click);
             // 
             // miQuit
             // 
             this.miQuit.Name = "miQuit";
-            this.miQuit.Size = new System.Drawing.Size(103, 22);
+            this.miQuit.Size = new System.Drawing.Size(180, 22);
             this.miQuit.Text = "Quit";
             this.miQuit.Click += new System.EventHandler(this.miQuit_Click);
             // 
@@ -69,7 +74,6 @@
             // 
             this.rtbText.Location = new System.Drawing.Point(12, 27);
             this.rtbText.Name = "rtbText";
-            this.rtbText.ReadOnly = true;
             this.rtbText.Size = new System.Drawing.Size(480, 300);
             this.rtbText.TabIndex = 1;
             this.rtbText.Text = "";
@@ -77,6 +81,20 @@
             // ofdOpenFile
             // 
             this.ofdOpenFile.Filter = "Text Files|**.txt|All Files|*.*";
+            // 
+            // miSave
+            // 
+            this.miSave.Name = "miSave";
+            this.miSave.Size = new System.Drawing.Size(180, 22);
+            this.miSave.Text = "Save";
+            this.miSave.Click += new System.EventHandler(this.miSave_Click);
+            // 
+            // miSaveAs
+            // 
+            this.miSaveAs.Name = "miSaveAs";
+            this.miSaveAs.Size = new System.Drawing.Size(180, 22);
+            this.miSaveAs.Text = "Save As...";
+            this.miSaveAs.Click += new System.EventHandler(this.miSaveAs_Click);
             // 
             // MainForm
             // 
@@ -103,6 +121,9 @@
         private System.Windows.Forms.ToolStripMenuItem miQuit;
         private System.Windows.Forms.RichTextBox rtbText;
         private System.Windows.Forms.OpenFileDialog ofdOpenFile;
+        private System.Windows.Forms.ToolStripMenuItem miSave;
+        private System.Windows.Forms.SaveFileDialog sfdSaveFile;
+        private System.Windows.Forms.ToolStripMenuItem miSaveAs;
     }
 }
 
