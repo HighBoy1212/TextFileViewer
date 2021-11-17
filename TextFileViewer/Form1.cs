@@ -17,6 +17,8 @@ namespace TextFileViewer {
         private string strCurrentPath = null;
         // Keep track of whether displayed file has BOM
         private bool bHasBOM = false;
+        // Keep trak of whether file uses CRLF for the end of a line
+        private bool bLineEndCRLF = false;
 
         public MainForm() {
             InitializeComponent();
@@ -36,6 +38,8 @@ namespace TextFileViewer {
                 // Opening a new file. Save its path.
                 strCurrentPath = ofdOpenFile.FileName;
                 DisplayText();
+                // Display the file's path in the window title bar
+                this.Text = strCurrentPath;
             }
         }
 
@@ -53,6 +57,7 @@ namespace TextFileViewer {
             // and display it in the rich textbox
             // Note that the read byte method returns the next byte as an integer
             // The special return value -1 indicates that we have reached the end of the file and there is no more data to read
+            string strText = "";
             Encoding encUTF8 = Encoding.UTF8;
             byte[] byBuffer = new byte[1024];
             int iBytesRead;
@@ -61,11 +66,27 @@ namespace TextFileViewer {
             {
                 // Convert to a string of characters using the UTF-8 encoding
                 string strDecodedChar = encUTF8.GetString(byBuffer, 0, iBytesRead);
-                // Now we have the next string of characters. Append it to the text in the rich textbox
-                rtbText.AppendText(strDecodedChar);
+                // Now we have the next string of characters. Append it to the string holding the text we have read so far
+                strText += strDecodedChar;
             }
             // Finished reading the file. Close it.
             fsFile.Close();
+            // Check whether the file uses CRLF for the end of a line, by searching for
+            // the pair of characters \r\n (\r is carriage return, \n is new line (line feed))
+            if (strText.IndexOf("\r\n") >= 0)
+            {
+                // CRLF appears in the text read in from the file. Save that info and 
+                // convert all instances of CRLF to LF only
+                bLineEndCRLF = true;
+                strText = strText.Replace("\r\n", "\n");
+            }
+            else
+            {
+                bLineEndCRLF = false;
+            }
+            // Display the text in the rich textbox
+            rtbText.Text = strText;
+
         }
 
         // A function to check for a BOM (0xEF, 0xBB, 0xBF) at the beginning of the file and skip over it if present
@@ -114,13 +135,21 @@ namespace TextFileViewer {
             // Set the initial path equal to the current path if there a valid one
             if(strCurrentPath != null)
             {
-                sfdSaveFile.FileName = strCurrentPath;
+                // Seperate the directory name from the file name
+                string strDirName = Path.GetDirectoryName(strCurrentPath);
+                string strFileName = Path.GetFileName(strCurrentPath);
+                sfdSaveFile.InitialDirectory = strDirName;
+                sfdSaveFile.FileName = strFileName;
             }
             // Display the dialog and only proceed if it returns "OK"
             if (sfdSaveFile.ShowDialog() == DialogResult.OK)
             {
                 // Proceed to save to the selected path
                 SaveText(sfdSaveFile.FileName);
+                // Store the new path we saved the text to as the current path
+                strCurrentPath = sfdSaveFile.FileName;
+                // Display the file's path in the window title bar
+                this.Text = strCurrentPath;
             }
         }
         // Save the text currently in the rich textbox to the given file
@@ -128,22 +157,26 @@ namespace TextFileViewer {
         {
             // Open the file to save to. Create a new file if it does not already exist
             // and write over the file if one already exists
-            FileStream fsSaveFile = File.Open(strSavePath, FileMode.Create, FileAccess.Write);
-            // Write a BOM if the original file contained one
-            if (bHasBOM)
+            using (FileStream fsSaveFile = File.Open(strSavePath, FileMode.Create, FileAccess.Write))
             {
-                // Write bytes (0xEF, 0xBB, 0xBF)
-                fsSaveFile.WriteByte(0xEF);
-                fsSaveFile.WriteByte(0xBB);
-                fsSaveFile.WriteByte(0xBF);
+                // Write a BOM if the original file contained one
+                if (bHasBOM)
+                {
+                    // Write bytes (0xEF, 0xBB, 0xBF)
+                    fsSaveFile.WriteByte(0xEF);
+                    fsSaveFile.WriteByte(0xBB);
+                    fsSaveFile.WriteByte(0xBF);
+                }
+                // Get the text from the rich textbox, convert to byte[] (using UTF-8 encoding), and write to file
+                string strText = rtbText.Text;
+                // If the original file used CRLF for the end of a line, we must voncert from LF to CRLF
+                if (bLineEndCRLF)
+                {
+                    strText = strText.Replace("\n", "\r\n");
+                }
+                byte[] byBuffer = Encoding.UTF8.GetBytes(strText);
+                fsSaveFile.Write(byBuffer, 0, byBuffer.Length);
             }
-            // Get the text from the rich textbox, convert to byte[] (using UTF-8 encoding), and write to file
-            string strText = rtbText.Text;
-            byte[] byBuffer = Encoding.UTF8.GetBytes(strText);
-            fsSaveFile.Write(byBuffer, 0, byBuffer.Length);
-            fsSaveFile.Close();
-        }
-
-        
+        }    
     }
 }
